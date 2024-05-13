@@ -22,7 +22,7 @@ authRouter.post('/api/signup', async (request, response) => {
         // if not, store user's data
         response.json({ user });// response allow us to send data
     }
-    catch (e) { print(e); }
+    catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 module.exports = authRouter;

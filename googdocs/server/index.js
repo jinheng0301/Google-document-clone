@@ -1,11 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRouter = require('./route/auth');
+const cors = require('cors');
 
 const PORT = process.env.PORT | 3001;
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(authRouter);
 // authRouter: a middleware between server and client side
