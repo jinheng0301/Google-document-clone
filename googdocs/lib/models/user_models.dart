@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class UserModel {
   final String email;
   final String name;
@@ -13,7 +15,7 @@ class UserModel {
     required this.token,
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'email': email,
       'name': name,
@@ -32,6 +34,9 @@ class UserModel {
       token: map['token'] ?? '',
     );
   }
+
+  String toJson() => json.encode(toMap());
+  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source));
 
   UserModel copyWith({
     String? email,
