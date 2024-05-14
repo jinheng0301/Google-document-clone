@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:googdocs/models/error_models.dart';
 import 'package:googdocs/repository/auth_repository.dart';
-import 'package:googdocs/screens/home_screen.dart';
-import 'package:googdocs/screens/login_screens.dart';
+import 'package:googdocs/router.dart';
+import 'package:routemaster/routemaster.dart';
 
 void main() {
   runApp(
@@ -42,11 +42,20 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider);
-
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: user == null ? LoginScreen() : HomeScreen(),
+      routerDelegate: RoutemasterDelegate(
+        routesBuilder: (context) {
+          final user = ref.watch(userProvider);
+
+          if (user != null && user.token.isNotEmpty) {
+            return loggedInRoute;
+          } else {
+            return loggedOutRoute;
+          }
+        },
+      ),
+      routeInformationParser: RoutemasterParser(),
     );
   }
 }
