@@ -27,9 +27,9 @@ authRouter.post('/api/signup', async (request, response) => {
     catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-authRouter.get('/', auth, async (req, res) => {
-    const user = await User.findById(req.user);
-    res.json({ user, token: req.token });
+authRouter.get('/', async (request, response) => {
+    const user = await User.findById(request.user);
+    response.json({ user, token: request.token });
 });
 
 module.exports = authRouter;

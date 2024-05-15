@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRouter = require('./route/auth');
 const cors = require('cors');
+const documentRouter = require('./route/document');
 
 const PORT = process.env.PORT | 3001;
 
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(authRouter);
 // authRouter: a middleware between server and client side
+app.use(documentRouter);
 
 const DB = 'mongodb+srv://jinheng:FPac!vA3Qf.zXZB@cluster0.slq3oxv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
