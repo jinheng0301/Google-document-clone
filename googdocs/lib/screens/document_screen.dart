@@ -3,6 +3,10 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:googdocs/colors.dart';
+import 'package:googdocs/models/document_model.dart';
+import 'package:googdocs/models/error_models.dart';
+import 'package:googdocs/repository/auth_repository.dart';
+import 'package:googdocs/repository/document_repository.dart';
 
 class DocumentScreen extends ConsumerStatefulWidget {
   final String id;
@@ -19,12 +23,40 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
   TextEditingController titleController =
       TextEditingController(text: 'Unntitled document');
   final quill.QuillController _controller = quill.QuillController.basic();
+  ErrorModel? errorModel;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchDocumentData();
+  }
+
+  void fetchDocumentData() async {
+    ErrorModel errorModel =
+        await ref.read(documentRepositoryProvider).getDocumentById(
+              ref.read(userProvider)!.token,
+              widget.id,
+            );
+    if (errorModel.data != null) {
+      titleController.text = (errorModel.data as DocumentModel).title;
+      setState(() {});
+    }
+  }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     titleController.dispose();
+  }
+
+  void updateDocumentTitle(WidgetRef ref, String title) {
+    ref.read(documentRepositoryProvider).updateDocumentTitle(
+          ref.read(userProvider)!.token,
+          widget.id,
+          title,
+        );
   }
 
   @override
@@ -56,6 +88,7 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
                     ),
                     contentPadding: EdgeInsets.only(left: 10),
                   ),
+                  onSubmitted: (value) => updateDocumentTitle(ref, value),
                 ),
               ),
             ],

@@ -69,6 +69,7 @@ class DocumentRepository {
         Uri.parse('$host/doc/me'),
         headers: {
           'Content type:': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
         },
       );
 
@@ -94,6 +95,87 @@ class DocumentRepository {
             data: null,
             error: res.body,
           );
+      }
+    } catch (e) {
+      error = ErrorModel(
+        data: e.toString(),
+        error: null,
+      );
+    }
+
+    return error;
+  }
+
+  Future<ErrorModel> updateDocumentTitle(
+    String token,
+    String id,
+    String title,
+  ) async {
+    ErrorModel error = ErrorModel(
+      data: null,
+      error: 'Some unexpected error occured.',
+    );
+
+    try {
+      var res = await _client.post(
+        Uri.parse('$host/doc/title'),
+        body: jsonEncode({
+          'title': title,
+          'id': id,
+        }),
+        headers: {
+          'Content type:': 'application/json; charset=UTF-8',
+        },
+      );
+
+      switch (res.statusCode) {
+        case 200:
+          error = ErrorModel(
+            data: DocumentModel.fromJson(res.body),
+            error: null,
+          );
+
+          break;
+        default:
+          error = ErrorModel(
+            data: null,
+            error: res.body,
+          );
+      }
+    } catch (e) {
+      error = ErrorModel(
+        data: e.toString(),
+        error: null,
+      );
+    }
+    return error;
+  }
+
+  Future<ErrorModel> getDocumentById(String token, String id) async {
+    ErrorModel error = ErrorModel(
+      data: null,
+      error: 'Some unexpected error occured.',
+    );
+
+    try {
+      var res = await _client.get(
+        Uri.parse('$host/doc/$id'),
+        headers: {
+          'Content type:': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+      );
+
+      switch (res.statusCode) {
+        case 200:
+          error = ErrorModel(
+            data: DocumentModel.fromJson(res.body),
+            error: null,
+          );
+
+          break;
+        default:
+          throw 'This document does not exist, please create a new one.';
       }
     } catch (e) {
       error = ErrorModel(

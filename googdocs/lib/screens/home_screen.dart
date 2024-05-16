@@ -4,7 +4,7 @@ import 'package:googdocs/colors.dart';
 import 'package:googdocs/models/document_model.dart';
 import 'package:googdocs/repository/auth_repository.dart';
 import 'package:googdocs/repository/document_repository.dart';
-import 'package:googdocs/widgets/loader.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:routemaster/routemaster.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -71,7 +71,12 @@ class HomeScreen extends ConsumerWidget {
             ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Loader();
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.brown,
+                size: 40,
+              ),
+            );
           }
 
           return Center(
