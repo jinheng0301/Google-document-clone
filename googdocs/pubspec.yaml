@@ -41,6 +41,8 @@ dependencies:
   http: ^1.2.1
   shared_preferences: ^2.2.3
   routemaster: ^1.0.1
+  loading_animation_widget: ^1.2.1
+  flutter_quill: ^9.3.11
 
 dev_dependencies:
   flutter_test:

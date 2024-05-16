@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:googdocs/colors.dart';
+import 'package:googdocs/models/document_model.dart';
 import 'package:googdocs/repository/auth_repository.dart';
 import 'package:googdocs/repository/document_repository.dart';
+import 'package:googdocs/widgets/loader.dart';
 import 'package:routemaster/routemaster.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -32,6 +34,10 @@ class HomeScreen extends ConsumerWidget {
     }
   }
 
+  void navigateToDocument(BuildContext context, String documentId) {
+    Routemaster.of(context).push('/document/$documentId');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -59,10 +65,47 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Text(
-          ref.watch(userProvider)!.name,
-        ),
+      body: FutureBuilder(
+        future: ref.watch(documentRepositoryProvider).getDocument(
+              ref.watch(userProvider)!.token,
+            ),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Loader();
+          }
+
+          return Center(
+            child: Container(
+              margin: EdgeInsets.only(top: 10),
+              width: 600,
+              child: ListView.builder(
+                itemCount: snapshot.data!.data.length,
+                itemBuilder: (context, index) {
+                  DocumentModel document = snapshot.data!.data[index];
+
+                  return InkWell(
+                    onTap: () {
+                      navigateToDocument(context, document.id);
+                    },
+                    child: SizedBox(
+                      height: 50,
+                      child: Card(
+                        child: Center(
+                          child: Text(
+                            document.title,
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }
