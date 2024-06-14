@@ -1,9 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const authRouter = require('./route/auth');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const http = require('https');
-const documentRouter = require('./route/document');
+const authRouter = require('./routes/auth');
+const documentRouter = require('./routes/document');
 
 const PORT = process.env.PORT | 3001;
 
@@ -18,7 +18,7 @@ app.use(authRouter);
 // authRouter: a middleware between server and client side
 app.use(documentRouter);
 
-const DB = 'mongodb+srv://jinheng:FPac!vA3Qf.zXZB@cluster0.slq3oxv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const DB = 'mongodb+srv://jinheng:FPac!vA3Qf.zXZB@cluster0.slq3oxv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 mongoose.connect(DB).then(() => {
     console.log('connection successsful');
@@ -50,6 +50,6 @@ const saveData = async (data) => {
 }
 
 server.listen(PORT, '0.0.0.0', function () {
-    console.log(`connected at port ${PORT}`);
+    console.log(`connected at port ${PORT}`);   
     // backtick `` is present of the escape key
 });
